@@ -1,16 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- */
 
 package com.mycompany.recicle;
 
-/**
- *
- * @author Miguel
- */
+import javax.swing.SwingUtilities;
+
 public class ReCicle {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+
+        SwingUtilities.invokeLater(() -> {
+            Database.initialize();
+            new Home().setVisible(true);
+        });
+
     }
 }
