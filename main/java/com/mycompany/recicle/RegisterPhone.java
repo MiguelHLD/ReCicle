@@ -716,21 +716,15 @@ private void savePhone() {
     }
 
     private Image carregarIcone() {
-        try {
-            File arquivo = new File("src/main/images/icon.png");
+    java.net.URL recurso = getClass().getResource("/images/icon.png");
 
-            if (arquivo.exists()) {
-                return javax.imageio.ImageIO.read(arquivo);
-            }
-
-            System.err.println("Ícone não encontrado: " + arquivo.getAbsolutePath());
-
-        } catch (java.io.IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+    if (recurso != null) {
+        return new ImageIcon(recurso).getImage();
     }
+
+    System.err.println("Ícone não encontrado: /images/icon.png");
+    return null;
+}
 
 }
 

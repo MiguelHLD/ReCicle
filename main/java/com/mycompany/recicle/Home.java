@@ -259,93 +259,43 @@ public class Home extends JFrame {
     // =========================================
 
     private Image carregarIcone() {
+    java.net.URL recurso = getClass().getResource("/images/icon.png");
 
-        File arquivo = new File(
-                "src/main/images/icon.png"
-        );
-
-        try {
-            if (arquivo.exists()) {
-                return ImageIO.read(arquivo);
-            }
-
-            System.err.println(
-                    "Ícone não encontrado: "
-                    + arquivo.getAbsolutePath()
-            );
-
-        } catch (IOException e) {
-            System.err.println(
-                    "Erro ao carregar o ícone: "
-                    + e.getMessage()
-            );
-        }
-
-        return null;
+    if (recurso != null) {
+        return new ImageIcon(recurso).getImage();
     }
+
+    System.err.println("Ícone não encontrado: /images/icon.png");
+    return null;
+}
 
     // =========================================
     // CARREGAR LOGOTIPO DO CABEÇALHO
     // =========================================
 
-    private JLabel criarLogo() {
+    
+private JLabel criarLogo() {
+    java.net.URL recurso = getClass().getResource("/images/logotipo.png");
 
-        File arquivo = new File(
-                "src/main/images/logotipo.png"
+    if (recurso != null) {
+        ImageIcon originalLogo = new ImageIcon(recurso);
+
+        Image imagem = originalLogo.getImage().getScaledInstance(
+                100, 100, Image.SCALE_SMOOTH
         );
 
-        if (arquivo.exists()) {
-
-            ImageIcon originalLogo =
-                    new ImageIcon(arquivo.getAbsolutePath());
-
-            Image imagem = originalLogo.getImage()
-                    .getScaledInstance(
-                            100,
-                            100,
-                            Image.SCALE_SMOOTH
-                    );
-
-            return new JLabel(new ImageIcon(imagem));
-
-        } else {
-
-            System.err.println(
-                    "Logotipo não encontrada: "
-                    + arquivo.getAbsolutePath()
-            );
-
-            JLabel logoTexto = new JLabel("♻");
-            logoTexto.setFont(
-                    new Font("Arial", Font.BOLD, 38)
-            );
-            logoTexto.setForeground(Color.WHITE);
-
-            return logoTexto;
-        }
+        return new JLabel(new ImageIcon(imagem));
     }
-private void adicionarImagemCelular(JPanel card) {
 
-    File arquivo = new File("src/main/images/celular.png");
+    System.err.println("Logotipo não encontrado: /images/logotipo.png");
 
-    if (arquivo.exists()) {
-        ImageIcon original = new ImageIcon(arquivo.getAbsolutePath());
+    JLabel logoTexto = new JLabel("♻");
+    logoTexto.setFont(new Font("Arial", Font.BOLD, 38));
+    logoTexto.setForeground(Color.WHITE);
 
-        Image imagem = original.getImage().getScaledInstance(
-                55, 55, Image.SCALE_SMOOTH
-        );
-
-        JLabel imagemCelular = new JLabel(new ImageIcon(imagem));
-        imagemCelular.setAlignmentX(Component.LEFT_ALIGNMENT);
-
-        card.add(imagemCelular, 0);
-    } else {
-        System.err.println(
-                "Imagem do celular não encontrada: "
-                + arquivo.getAbsolutePath()
-        );
-    }
+    return logoTexto;
 }
+
     // =========================================
     // CRIAR CARTÕES
     // =========================================
@@ -465,6 +415,27 @@ private void adicionarImagemCelular(JPanel card) {
             }
         });
     }
+
+private void adicionarImagemCelular(JPanel card) {
+    java.net.URL recurso = getClass().getResource("/images/celular.png");
+
+    if (recurso != null) {
+        ImageIcon original = new ImageIcon(recurso);
+
+        Image imagem = original.getImage().getScaledInstance(
+                55, 55, Image.SCALE_SMOOTH
+        );
+
+        JLabel imagemCelular = new JLabel(new ImageIcon(imagem));
+        imagemCelular.setAlignmentX(Component.LEFT_ALIGNMENT);
+
+        card.add(imagemCelular, 0);
+    } else {
+        System.err.println(
+                "Imagem do celular não encontrada: /images/celular.png"
+        );
+    }
+}
 
     // =========================================
     // INICIAR PROGRAMA

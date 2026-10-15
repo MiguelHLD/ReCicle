@@ -1,6 +1,9 @@
 
 package com.mycompany.recicle;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,15 +12,39 @@ import java.sql.ResultSet;
 
 public class Database {
 
-    private static final String URL = "jdbc:sqlite:recicle.db";
+    // Pasta permanente do banco de dados do ReCicle
+    private static final Path DATABASE_FOLDER = Paths.get(
+            System.getProperty("user.home"),
+            "ReCicle"
+    );
+
+    // Caminho completo do arquivo do banco de dados
+    private static final Path DATABASE_FILE =
+            DATABASE_FOLDER.resolve("recicle.db");
 
     // Abre a conexão com o banco de dados
     public static Connection connect() throws SQLException {
-        return DriverManager.getConnection(URL);
+
+        try {
+            // Cria a pasta automaticamente, caso não exista
+            Files.createDirectories(DATABASE_FOLDER);
+
+        } catch (java.io.IOException e) {
+            throw new SQLException(
+                    "Não foi possível criar a pasta do banco de dados.",
+                    e
+            );
+        }
+
+        // Conecta ao banco usando um caminho absoluto
+        String url = "jdbc:sqlite:" + DATABASE_FILE.toAbsolutePath();
+
+        return DriverManager.getConnection(url);
     }
 
     // Cria as tabelas e atualiza a estrutura do banco
     public static void initialize() {
+
         String createPhonesTable = """
             CREATE TABLE IF NOT EXISTS phones (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -39,27 +66,31 @@ public class Database {
 
             // Atualiza bancos antigos sem apagar os registros
             addColumnIfNotExists(
-                connection,
-                "phones",
-                "listing_type",
-                "TEXT NOT NULL DEFAULT 'Preço'"
+                    connection,
+                    "phones",
+                    "listing_type",
+                    "TEXT NOT NULL DEFAULT 'Preço'"
             );
 
             addColumnIfNotExists(
-                connection,
-                "phones",
-                "trade_description",
-                "TEXT"
+                    connection,
+                    "phones",
+                    "trade_description",
+                    "TEXT"
             );
 
             System.out.println(
-                "Banco de dados inicializado com sucesso!"
+                    "Banco de dados inicializado com sucesso!"
+            );
+
+            System.out.println(
+                    "Local do banco: " + DATABASE_FILE.toAbsolutePath()
             );
 
         } catch (SQLException e) {
             System.err.println(
-                "Erro ao inicializar o banco de dados: "
-                + e.getMessage()
+                    "Erro ao inicializar o banco de dados: "
+                    + e.getMessage()
             );
 
             e.printStackTrace();
@@ -81,6 +112,7 @@ public class Database {
              ResultSet resultSet = statement.executeQuery(sql)) {
 
             while (resultSet.next()) {
+
                 String existingColumn = resultSet.getString("name");
 
                 if (columnName.equalsIgnoreCase(existingColumn)) {
@@ -91,6 +123,7 @@ public class Database {
         }
 
         if (!columnExists) {
+
             String alterSql = "ALTER TABLE " + tableName
                     + " ADD COLUMN " + columnName
                     + " " + columnDefinition;
@@ -100,9 +133,8 @@ public class Database {
             }
 
             System.out.println(
-                "Coluna adicionada: " + columnName
+                    "Coluna adicionada: " + columnName
             );
         }
     }
 }
-
