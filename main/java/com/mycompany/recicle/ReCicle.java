@@ -1,6 +1,8 @@
 
 package com.mycompany.recicle;
 
+import com.mycompany.recicle.database.Database;
+import com.mycompany.recicle.view.Home;
 import javax.swing.SwingUtilities;
 
 public class ReCicle {
